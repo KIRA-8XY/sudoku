@@ -1,3 +1,16 @@
+/**
+ * ES234317-Algorithm and Data Structures
+ * Semester Ganjil, 2024/2025
+ * Group Capstone Project
+ * Group #1
+ * 1 - 5026221177 - Muhammad Ariq Alwin
+ * 2 - Student ID - Student Name 2
+ * 3 - Student ID - Student Name 3
+ */
+
+
+
+
 package sudoku;
 import javax.swing.*;
 import java.awt.*;
@@ -76,4 +89,3 @@ public class Cell extends JTextField {
     }
 
 }
-//test 12345
