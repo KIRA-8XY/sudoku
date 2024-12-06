@@ -56,9 +56,9 @@ public class GameBoardPanel extends JPanel {
     }
 
 
-    public void newGame() {
-        // Generate a new puzzle
-        puzzle.newPuzzle(2);
+    public void newGame(String difficulty) {
+        // Generate a new puzzle based on the selected difficulty
+        puzzle.newPuzzle(difficulty);
 
         for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
             for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {

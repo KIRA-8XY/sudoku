@@ -25,6 +25,7 @@ import javax.swing.*;
         GameBoardPanel board = new GameBoardPanel();
         JButton btnNewGame = new JButton("New Game");
         JButton btnResetGame = new JButton("Reset Game");
+        JComboBox<String> difficultyComboBox = new JComboBox<>(new String[]{"Easy", "Intermediate", "Difficult"});
 
         // Constructor
         public Sudoku() {
@@ -37,7 +38,8 @@ import javax.swing.*;
             btnNewGame.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    board.newGame();
+                    String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
+                    board.newGame(selectedDifficulty);
                 }
             });
 
@@ -50,12 +52,14 @@ import javax.swing.*;
             });
 
             JPanel buttonPanel = new JPanel();
+            buttonPanel.add(new JLabel("Difficulty:"));
+            buttonPanel.add(difficultyComboBox);
             buttonPanel.add(btnNewGame);
             buttonPanel.add(btnResetGame);
             cp.add(buttonPanel, BorderLayout.SOUTH);
 
             // Initialize the game board to start the game
-            board.newGame();
+            board.newGame("Easy");
 
             pack();     // Pack the UI components, instead of using setSize()
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  // to handle window-closing
