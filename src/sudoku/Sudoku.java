@@ -32,6 +32,9 @@ import javax.swing.*;
             Container cp = getContentPane();
             cp.setLayout(new BorderLayout());
 
+            countdownClock = new CountdownClock(getCountdownTime("Easy"));
+            cp.add(countdownClock, BorderLayout.NORTH);
+
             cp.add(board, BorderLayout.CENTER);
 
             JMenuBar menuBar = new JMenuBar();
@@ -47,6 +50,8 @@ import javax.swing.*;
                 public void actionPerformed(ActionEvent e) {
                     String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
                     board.newGame(selectedDifficulty);
+                    countdownClock.resetTimer(getCountdownTime(selectedDifficulty));
+
                 }
             });
 
@@ -58,6 +63,8 @@ import javax.swing.*;
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     board.resetGame();
+                    String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
+                countdownClock.resetTimer(getCountdownTime(selectedDifficulty));
                 }
             });
 
@@ -114,4 +121,17 @@ import javax.swing.*;
             setTitle("Sudoku");
             setVisible(true);
         }
+        private int getCountdownTime(String difficulty) {
+            switch (difficulty) {
+                case "Easy":
+                    return 600; // 10 minutes
+                case "Intermediate":
+                    return 300; // 5 minutes
+                case "Difficult":
+                    return 180; // 3 minutes
+                default:
+                    return 600; // Default to 10 minutes
+            }
+        }
     }
+    
