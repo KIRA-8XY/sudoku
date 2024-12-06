@@ -34,8 +34,15 @@ import javax.swing.*;
 
             cp.add(board, BorderLayout.CENTER);
 
-            // Add a button to the south to re-start the game via board.newGame()
-            btnNewGame.addActionListener(new ActionListener() {
+            JMenuBar menuBar = new JMenuBar();
+
+            JMenu fileMenu = new JMenu("File");
+            JMenuItem newGameItem = new JMenuItem("New Game");
+            JMenuItem resetGameItem = new JMenuItem("Reset Game");
+            JMenuItem exitItem = new JMenuItem("Exit");
+
+            // Add action listeners to the "File" menu items
+            newGameItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
@@ -43,19 +50,60 @@ import javax.swing.*;
                 }
             });
 
+            // Add a button to the south to re-start the game via board.newGame()
+
+
             // Add a button to the south to reset the game via board.resetGame()
-            btnResetGame.addActionListener(new ActionListener() {
+            resetGameItem.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     board.resetGame();
                 }
             });
 
+            exitItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    System.exit(0);
+                }
+            });
+
+            // Add menu items to the "File" menu
+            fileMenu.add(newGameItem);
+            fileMenu.add(resetGameItem);
+            fileMenu.addSeparator();
+            fileMenu.add(exitItem);
+
+            // Create the "Options" menu
+            JMenu optionsMenu = new JMenu("Options");
+            // Add options menu items here if needed
+
+            // Create the "Help" menu
+            JMenu helpMenu = new JMenu("Help");
+            JMenuItem aboutItem = new JMenuItem("About");
+
+            // Add action listener to the "About" menu item
+            aboutItem.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    JOptionPane.showMessageDialog(Sudoku.this, "Sudoku Game\nVersion 1.0\nDeveloped by Group #4", "About", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
+
+            // Add menu items to the "Help" menu
+            helpMenu.add(aboutItem);
+
+            // Add menus to the menu bar
+            menuBar.add(fileMenu);
+            menuBar.add(optionsMenu);
+            menuBar.add(helpMenu);
+
+            // Set the menu bar for the frame
+            setJMenuBar(menuBar);
+
             JPanel buttonPanel = new JPanel();
             buttonPanel.add(new JLabel("Difficulty:"));
             buttonPanel.add(difficultyComboBox);
-            buttonPanel.add(btnNewGame);
-            buttonPanel.add(btnResetGame);
             cp.add(buttonPanel, BorderLayout.SOUTH);
 
             // Initialize the game board to start the game
