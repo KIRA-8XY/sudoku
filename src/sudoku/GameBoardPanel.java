@@ -60,11 +60,18 @@ public class GameBoardPanel extends JPanel {
         // Generate a new puzzle based on the selected difficulty
         puzzle.newPuzzle(difficulty);
 
-        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
-            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+                    for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                        cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
+                    }
+                }
+                revalidate();
+                repaint();
             }
-        }
+        });
     }
 
     public void resetGame() {
@@ -95,6 +102,18 @@ public class GameBoardPanel extends JPanel {
             }
         }
         return true;
+    }
+
+    public int getRemainingCells() {
+        int remainingCells = 0;
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.TO_GUESS) {
+                    remainingCells++;
+                }
+            }
+        }
+        return remainingCells;
     }
 
     private class CellInputListener implements ActionListener {
