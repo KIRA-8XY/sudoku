@@ -24,6 +24,7 @@ import javax.swing.*;
         // private variables
         GameBoardPanel board = new GameBoardPanel();
         JButton btnNewGame = new JButton("New Game");
+        JButton btnResetGame = new JButton("Reset Game");
 
         // Constructor
         public Sudoku() {
@@ -39,7 +40,19 @@ import javax.swing.*;
                     board.newGame();
                 }
             });
-            cp.add(btnNewGame, BorderLayout.SOUTH);
+
+            // Add a button to the south to reset the game via board.resetGame()
+            btnResetGame.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    board.resetGame();
+                }
+            });
+
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(btnNewGame);
+            buttonPanel.add(btnResetGame);
+            cp.add(buttonPanel, BorderLayout.SOUTH);
 
             // Initialize the game board to start the game
             board.newGame();
@@ -50,4 +63,3 @@ import javax.swing.*;
             setVisible(true);
         }
     }
-

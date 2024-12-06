@@ -27,7 +27,7 @@ public class GameBoardPanel extends JPanel {
     // Board width/height in pixels
 
     // Define properties
-    private Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
+    Cell[][] cells = new Cell[SudokuConstants.GRID_SIZE][SudokuConstants.GRID_SIZE];
     private Puzzle puzzle = new Puzzle();
 
     /** Constructor */
@@ -67,6 +67,21 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
+    public void resetGame() {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (!puzzle.isGiven[row][col]) {
+                    cells[row][col].setText("");
+                    cells[row][col].setStatus(CellStatus.TO_GUESS);
+                    cells[row][col].setBackground(Cell.BG_TO_GUESS); // Reset background color
+                    cells[row][col].paint();
+                } else {
+                    cells[row][col].setBackground(Cell.BG_GIVEN); // Reset background color for given cells
+                }
+            }
+        }
+    }
+
     /**
      * Return true if the puzzle is solved
      * i.e., none of the cell have status of TO_GUESS or WRONG_GUESS
@@ -91,7 +106,11 @@ public class GameBoardPanel extends JPanel {
             int numberIn = Integer.parseInt(sourceCell.getText());
             // For debugging
             System.out.println("You entered " + numberIn);
-            if (numberIn == sourceCell.number) {
+
+            // Check for conflicts
+            boolean conflict = checkForConflicts(sourceCell, numberIn);
+
+            if (!conflict) {
                 sourceCell.status = CellStatus.CORRECT_GUESS;
             } else {
                 sourceCell.status = CellStatus.WRONG_GUESS;
@@ -99,6 +118,54 @@ public class GameBoardPanel extends JPanel {
             sourceCell.paint(); // re-paint this cell based on its status
             if (isSolved()) {
                 JOptionPane.showMessageDialog(null, "Congratulations! You've solved the puzzle!");
+            }
+        }
+
+        private boolean checkForConflicts(Cell sourceCell, int numberIn) {
+            boolean conflict = false;
+            int row = sourceCell.getRow();
+            int col = sourceCell.getCol();
+
+            // Clear previous conflict highlights
+            clearConflictHighlights();
+
+            // Check row and column
+            for (int i = 0; i < SudokuConstants.GRID_SIZE; i++) {
+                if (cells[row][i].getNumber() == numberIn && i != col) {
+                    conflict = true;
+                    cells[row][i].setBackground(Cell.BG_WRONG_GUESS);
+                    sourceCell.setBackground(Cell.BG_WRONG_GUESS);
+                }
+                if (cells[i][col].getNumber() == numberIn && i != row) {
+                    conflict = true;
+                    cells[i][col].setBackground(Cell.BG_WRONG_GUESS);
+                    sourceCell.setBackground(Cell.BG_WRONG_GUESS);
+                }
+            }
+
+            // Check sub-grid
+            int subGridRowStart = (row / SudokuConstants.SUBGRID_SIZE) * SudokuConstants.SUBGRID_SIZE;
+            int subGridColStart = (col / SudokuConstants.SUBGRID_SIZE) * SudokuConstants.SUBGRID_SIZE;
+            for (int r = subGridRowStart; r < subGridRowStart + SudokuConstants.SUBGRID_SIZE; r++) {
+                for (int c = subGridColStart; c < subGridColStart + SudokuConstants.SUBGRID_SIZE; c++) {
+                    if (cells[r][c].getNumber() == numberIn && (r != row || c != col)) {
+                        conflict = true;
+                        cells[r][c].setBackground(Cell.BG_WRONG_GUESS);
+                        sourceCell.setBackground(Cell.BG_WRONG_GUESS);
+                    }
+                }
+            }
+
+            return conflict;
+        }
+
+        private void clearConflictHighlights() {
+            for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+                for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                    if (cells[row][col].status == CellStatus.WRONG_GUESS) {
+                        cells[row][col].setBackground(Cell.BG_TO_GUESS);
+                    }
+                }
             }
         }
     }
