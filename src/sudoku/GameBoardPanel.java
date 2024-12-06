@@ -54,7 +54,7 @@ public class GameBoardPanel extends JPanel {
 
         super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
     }
-
+    
 
     public void newGame(String difficulty) {
         // Generate a new puzzle based on the selected difficulty
@@ -89,6 +89,19 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
+    public void revealHint() {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.TO_GUESS) {
+                    cells[row][col].setText(String.valueOf(puzzle.numbers[row][col]));
+                    cells[row][col].setStatus(CellStatus.CORRECT_GUESS);
+                    cells[row][col].setBackground(Cell.BG_CORRECT_GUESS);
+                    cells[row][col].paint();
+                    return; // Reveal only one hint
+                }
+            }
+        }
+    }
     /**
      * Return true if the puzzle is solved
      * i.e., none of the cell have status of TO_GUESS or WRONG_GUESS

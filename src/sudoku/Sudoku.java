@@ -27,6 +27,8 @@
      GameBoardPanel board = new GameBoardPanel();
      JComboBox<String> difficultyComboBox = new JComboBox<>(new String[]{"Easy", "Intermediate", "Difficult"});
      JTextField statusBar = new JTextField("Welcome to Sudoku!");
+     private int hintsUsed = 0;
+     private static final int MAX_HINTS = 3;
  
      // Constructor
      public Sudoku() {
@@ -50,6 +52,7 @@
              public void actionPerformed(ActionEvent e) {
                  String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
                  board.newGame(selectedDifficulty);
+                 hintsUsed = 0; // Reset hints used
                  updateStatusBar();
              }
          });
@@ -58,6 +61,7 @@
              @Override
              public void actionPerformed(ActionEvent e) {
                  board.resetGame();
+                 hintsUsed = 0; // Reset hints used
                  updateStatusBar();
              }
          });
@@ -106,6 +110,8 @@
          JPanel buttonPanel = new JPanel();
          buttonPanel.add(new JLabel("Difficulty:"));
          buttonPanel.add(difficultyComboBox);
+         JButton hintButton = new JButton("Hint");
+         buttonPanel.add(hintButton);
          cp.add(buttonPanel, BorderLayout.NORTH);
  
          // Add the status bar to the south
@@ -117,7 +123,21 @@
             public void actionPerformed(ActionEvent e) {
                 String selectedDifficulty = (String) difficultyComboBox.getSelectedItem();
                 board.newGame(selectedDifficulty);
+                hintsUsed = 0; // Reset hints used
                 updateStatusBar();
+            }
+        });
+
+        hintButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (hintsUsed < MAX_HINTS) {
+                    board.revealHint();
+                    hintsUsed++;
+                    updateStatusBar();
+                } else {
+                    JOptionPane.showMessageDialog(Sudoku.this, "You have used all your hints.", "No more hints", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         });
  
