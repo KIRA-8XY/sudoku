@@ -102,6 +102,20 @@ public class GameBoardPanel extends JPanel {
             }
         }
     }
+
+    
+    public int getRemainingCells() {
+        int remainingCells = 0;
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.TO_GUESS) {
+                    remainingCells++;
+                }
+            }
+        }
+        return remainingCells;
+    }
+
     /**
      * Return true if the puzzle is solved
      * i.e., none of the cell have status of TO_GUESS or WRONG_GUESS
