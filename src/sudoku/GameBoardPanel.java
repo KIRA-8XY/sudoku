@@ -5,7 +5,7 @@
  * Group #4
  * 1 - 5026221177 - Muhammad Ariq Alwin
  * 2 - 5026231065 - Beh Siu Li
- * 3 - Student ID - Student Name 3
+ * 3 - 5026231168 - Okky Priscila Putri
  */
 
 
@@ -54,17 +54,24 @@ public class GameBoardPanel extends JPanel {
 
         super.setPreferredSize(new Dimension(BOARD_WIDTH, BOARD_HEIGHT));
     }
-
+    
 
     public void newGame(String difficulty) {
         // Generate a new puzzle based on the selected difficulty
         puzzle.newPuzzle(difficulty);
 
-        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
-            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
-                cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+                    for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                        cells[row][col].newGame(puzzle.numbers[row][col], puzzle.isGiven[row][col]);
+                    }
+                }
+                revalidate();
+                repaint();
             }
-        }
+        });
     }
 
     public void resetGame() {
@@ -82,6 +89,19 @@ public class GameBoardPanel extends JPanel {
         }
     }
 
+    public void revealHint() {
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.TO_GUESS) {
+                    cells[row][col].setText(String.valueOf(puzzle.numbers[row][col]));
+                    cells[row][col].setStatus(CellStatus.CORRECT_GUESS);
+                    cells[row][col].setBackground(Cell.BG_CORRECT_GUESS);
+                    cells[row][col].paint();
+                    return; // Reveal only one hint
+                }
+            }
+        }
+    }
     /**
      * Return true if the puzzle is solved
      * i.e., none of the cell have status of TO_GUESS or WRONG_GUESS
@@ -95,6 +115,18 @@ public class GameBoardPanel extends JPanel {
             }
         }
         return true;
+    }
+
+    public int getRemainingCells() {
+        int remainingCells = 0;
+        for (int row = 0; row < SudokuConstants.GRID_SIZE; ++row) {
+            for (int col = 0; col < SudokuConstants.GRID_SIZE; ++col) {
+                if (cells[row][col].status == CellStatus.TO_GUESS) {
+                    remainingCells++;
+                }
+            }
+        }
+        return remainingCells;
     }
 
     private class CellInputListener implements ActionListener {
